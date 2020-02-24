@@ -2,87 +2,70 @@
 let data;
 
 fetch('https://api.myjson.com/bins/zyv02')
-.then((response) => response.json())
-.then(books => {
-    data = books.books;
-    // createBookList("")
-    console.log("test")
+    .then((response) => response.json()).then(books => {
+        data = books.books;
+        createBookList("")
 
-    document.getElementById('search').addEventListener('input', function() {
-        let searchInput = document.getElementById('search').value
-        console.log(searchInput)
-        // console.log("test");
-        createBookList(searchInput)
+        document.getElementById('search').addEventListener('input', function () {
+            let searchInput = document.getElementById('search').value
+            console.log(searchInput)
+            createBookList(searchInput)
+        })
     })
-})
 
-// fetchUserData().then(books => {
-//     data = books.books;
-//     createBookList("")
-//     document.getElementById('search').addEventListener('input', function() {
-//         let searchInput = document.getElementById('search').value
-//         console.log(searchInput)
-//         // console.log("test");
-//         createBookList(searchInput)
-//     })
-
-// })
-
+function titleContainsString(title, searchInput) {
+    return title.toLowerCase().includes(searchInput.toLowerCase());
+}
 
 //-----Bookshelf
 function createBookList(searchInput) {
     var booklist = document.getElementById('booklist')
     booklist.innerHTML = "";
 
-    let newBookList = [];
+    var newBookList = data;
 
-    if (searchInput === "") {
-        newBookList = data;
-    } else {
-        for (let i = 0; i < data.length; i++) {
-            if (data[i].title.includes(searchInput)) {
-                console.log("book match " + data[i].title)
-                newBookList.push(data[i])
-            }
-        }
+    if (searchInput !== "") {
+        newBookList = data.filter(book => titleContainsString(book.title, searchInput))
     }
 
-    for(var i = 0; newBookList.length; i++){
-    var flipcard = document.createElement('div')
-    flipcard.setAttribute('class', 'flip-card row justify-content-md-center col-sm-3')
+    newBookList.forEach(book => createBookList(book))
 
-    var flipcardInner = document.createElement('div')
-    flipcardInner.setAttribute('class', 'flip-card-inner')
+    for (const book of newBookList) {
+        var flipcard = document.createElement('div')
+        flipcard.setAttribute('class', 'flip-card row justify-content-md-center col-sm-3')
 
-    var flipcardFront = document.createElement('div')
-    flipcardFront.setAttribute('class', 'flip-card-front')
+        var flipcardInner = document.createElement('div')
+        flipcardInner.setAttribute('class', 'flip-card-inner')
 
-    var bookImage = document.createElement('img')
-    bookImage.setAttribute('src', newBookList[i].cover)
-    bookImage.setAttribute('class', 'img')
+        var flipcardFront = document.createElement('div')
+        flipcardFront.setAttribute('class', 'flip-card-front')
 
-    var flipcardBack = document.createElement('div')
-    flipcardBack.setAttribute('class', 'flip-card-back')
+        var bookImage = document.createElement('img')
+        bookImage.setAttribute('src', book.cover)
+        bookImage.setAttribute('class', 'img')
 
-    var description = document.createElement('p')
-    description.setAttribute('class', 'description')
-    description.innerHTML = newBookList[i].description
+        var flipcardBack = document.createElement('div')
+        flipcardBack.setAttribute('class', 'flip-card-back')
 
-    var button = document.createElement('button')
-    button.setAttribute('id', 'button')
-    button.innerHTML = 'More Info'
-    button.setAttribute('value', newBookList[i].detail)
-    button.addEventListener('click', (event) => getDetail(event))
+        var description = document.createElement('p')
+        description.setAttribute('class', 'description')
+        description.innerHTML = book.description
 
-    flipcardFront.appendChild(bookImage)
-    flipcardInner.appendChild(flipcardFront)
-    flipcardInner.appendChild(flipcardBack)
-    flipcard.appendChild(flipcardInner)
-    booklist.appendChild(flipcard)
-    flipcardBack.appendChild(description)
-    description.appendChild(button)
+        var button = document.createElement('button')
+        button.setAttribute('id', 'button')
+        button.innerHTML = 'More Info'
+        button.setAttribute('value', book.detail)
+        button.addEventListener('click', (event) => getDetail(event))
+
+        flipcardFront.appendChild(bookImage)
+        flipcardInner.appendChild(flipcardFront)
+        flipcardInner.appendChild(flipcardBack)
+        flipcard.appendChild(flipcardInner)
+        booklist.appendChild(flipcard)
+        flipcardBack.appendChild(description)
+        description.appendChild(button)
     }
-} 
+}
 
 //-----Get Details (Modal Display)
 function getDetail(event) {
@@ -96,46 +79,7 @@ function getDetail(event) {
     var span = document.getElementsByClassName("close")[0];
 
     // When the user clicks on <span> (x), close the modal
-    span.onclick = function() { 
+    span.onclick = function () {
         modal.style.display = "none";
     }
 }
-
-//-----Search Engine
-// function searchBook() {
-//     var searchInput = document.getElementById('search').value.toLowerCase();
-//     console.log(searchInput)
-// }
-
-
-
-// function filter() {
-//     let searchResult = []
-//     let searchedTitle = searchBook()
-//     let titles = booksData[i].title
-
-//     for(var i = 0; booksData.length; i++){
-//         if(titles.includes(searchedTitle)){
-//             searchResult.push(titles)
-//         }
-//     }
-//     console.log(searchResult)
-//     createBookList(searchResult)
-// }
-
-//     var input = document.getElementById('search');
-//     var filterValue = input.value().toUpperCase();
-//     ul = document.getElementById('bookslist');
-//     li = document.getElementsByTagName('booksData')
-
-//     for(var i = 0; i < booksData.length; i++) {
-//         var description = booksData[i].getElementsByClassName('description')[0];
-//         if(description.innerHTML.toLowerCase().indexOf(filterValue) > -1) {
-//             li[i].style.display = "";
-//         }else{
-//             li[i].style.display = "none";
-//         }
-//     }
-
-// }
-
