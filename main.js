@@ -28,7 +28,7 @@ function createBookList(searchInput) {
         newBookList = data.filter(book => titleContainsString(book.title, searchInput))
     }
 
-    newBookList.forEach(book => createBookList(book))
+    // newBookList.forEach(book => createBookList(book))
 
     for (const book of newBookList) {
         var flipcard = document.createElement('div')
